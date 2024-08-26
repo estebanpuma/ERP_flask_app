@@ -1,0 +1,15 @@
+__pycache__/
+.vscode/
+.idea/
+*.pyc
+
+# Directorio de migraciones
+migrations/
+
+venv/
+.venv
+
+env/
+.env
+
+*.log

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap/bootstrap.min.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='icons/logo.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='icons/bootstrap/font/bootstrap-icons.min.css')}}">
+
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <header>
+        {% include '__navbar.html' %}
+    </header>
+    <main class="row" style="width: 100%;">
+        <section id="nav-left" class="d-none d-md-block col-2">
+            {% include '__nav.html' %}
+        </section>
+        <section id="content" class="col-lg-8 mx-auto">
+            {% block content %}
+            {% endblock %}
+        </section>
+        <section id="nav-right" class="d-none d-md-block col-2">
+
+        </section>
+    </main>
+    
+    <footer>
+        {% include '__footer.html' %}
+    </footer>
+    <script src="{{ url_for('static', filename='js/bootstrap/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>
