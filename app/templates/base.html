@@ -1,34 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap/bootstrap.min.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='icons/logo.ico') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='icons/bootstrap/font/bootstrap-icons.min.css')}}">
 
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
+    
     <header>
         {% include '__navbar.html' %}
     </header>
-    <main class="row" style="width: 100%;">
-        <section id="nav-left" class="d-none d-md-block col-2">
+
+    {% if login %}
+
+        {% block login %}{% endblock %}
+    
+    {% else %}
+
+    <main class="row mx-auto" style="width: 100%;">
+        <section id="nav-left" class="d-none d-md-block col-3">
             {% include '__nav.html' %}
         </section>
-        <section id="content" class="col-lg-8 mx-auto">
+        
+        <section id="content" class="col mx-auto">
+            <div id="flashedMessagges" class="mt-2">
+   
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+      
+            </div>
             {% block content %}
             {% endblock %}
         </section>
-        <section id="nav-right" class="d-none d-md-block col-2">
+        <section id="nav-right" class="d-none d-md-block col-3">
 
         </section>
     </main>
+
+    <section id="space" style="height: 80px;"></section>
     
     <footer>
         {% include '__footer.html' %}
     </footer>
+
+    {% endif %}
+
     <script src="{{ url_for('static', filename='js/bootstrap/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>

@@ -1,10 +1,41 @@
 from flask import Flask, render_template
+
+from flask_login import LoginManager
+
+from flask_sqlalchemy import SQLAlchemy
+
+from flask_migrate import Migrate
+
 from jinja2 import TemplateNotFound
+
+
+db = SQLAlchemy()
+
+migrate = Migrate()
+
+login_manager = LoginManager()
+
 
 def create_app(config):
 
     app = Flask(__name__)
     app.config.from_object(config)
+
+    login_manager.init_app(app)
+    login_manager.login_view = "auth.login"
+
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    with app.app_context():
+        from .models import initialize_admin_user  # Importar modelos después de inicializar db
+        initialize_admin_user()
+
+    from .admin import admin_bp
+    app.register_blueprint(admin_bp)
+
+    from .auth import auth_bp
+    app.register_blueprint(auth_bp)
 
     from .public import public_bp
     app.register_blueprint(public_bp)

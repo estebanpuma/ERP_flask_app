@@ -1,0 +1,14 @@
+{% macro render_errors(field) %}
+    {% if field.errors %}
+        <ul class="error-list list-group mb-3">
+            {% for error in field.errors %}
+                <li >
+                    <span class="text-danger">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        {{ error}}
+                    </span>    
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
