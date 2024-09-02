@@ -1,8 +1,9 @@
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+
 from .base import BaseModel, db, ValidationError
+
 import os
 
 
@@ -24,6 +25,7 @@ class User(UserMixin, BaseModel):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     last_login = db.Column(db.DateTime)
     birthday = db.Column(db.Date, nullable=True)
+    description = db.Column(db.Text, nullable=True)
     roles = db.relationship('Role', secondary=user_roles, back_populates='users')
 
     def __repr__(self):

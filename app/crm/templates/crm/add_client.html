@@ -1,0 +1,87 @@
+{% from "macros.html" import render_errors %}
+
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+ 
+{% block content %}
+<section id="header">
+    {% include '__title.html' %}
+</section>
+
+<section id="addClient">
+    <form action="" method="post" id="addClientForm" class="col-md-10 m-auto">
+        {{ form.hidden_tag() }}
+
+        <h2 class="h4 fw-normal my-4">Ingrese los datos</h2>
+        
+        <div class="form-group ms-2">
+            <fieldset class="row mb-2">
+                <legend class="col-form-label col-sm-2 pt-0 px-2">Persona:</legend>
+                <div class="col-sm-10 row ms-2">
+                    {% for subfield in form.client_type %}
+                        <div class="form-check col-md-6">
+                            {{ subfield(class='form-check-input', id=subfield.id) }}
+                            <label class="form-check-label" for="{{ subfield.id }}">
+                                {{ subfield.label.text }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                    {{ render_errors(form.client_type) }}
+                </div>
+            </fieldset>
+        </div>
+        
+        
+        <div class="input-group">
+            <div class="form-floating">              
+                {{ form.ruc_or_ci(class='form-control rounded-bottom-0 rounded-top', id="rucInput", placeholder="1500804479001") }}
+                <label for="rucInput">RUC</label>
+                {{ render_errors(form.ruc_or_ci) }}
+            </div>
+            <div class="input-group-text rounded-bottom-0">
+                <div>
+                    <label class="" for="CI"><small>CI</small></label>
+                    {{ form.is_ci(class='form-check-input') }}
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="form-floating">              
+            {{ form.name(class='form-control rounded-bottom-0 rounded-top-0', id="nameInput", placeholder="Jhon Scott") }}
+            <label for="nameInput">Razon social</label>
+            {{ render_errors(form.name) }}
+        </div>
+        <div class="form-floating">              
+            {{ form.address(class='form-control rounded-bottom-0 rounded-top-0', id="addressInput", placeholder="Ambato, calle 123") }}
+            <label for="addressInput">Direccion</label>
+            {{ render_errors(form.address) }}
+        </div>
+        
+        <div class="form-floating">              
+            {{ form.email(class='form-control rounded-bottom-0 rounded-top-0', id="emailInput", placeholder="Jhon Scott") }}
+            <label for="emailInput">Email</label>
+            {{ render_errors(form.email) }}
+        </div>
+        <div class="form-floating">              
+            {{ form.phone(class='form-control rounded-bottom-0 rounded-top-0', id="phoneInput", placeholder="0999152755") }}
+            <label for="phoneInput">Telefono</label>
+            {{ render_errors(form.phone) }}
+        </div>
+        
+        <div class="input-group mb-3"> 
+            <label class="input-group-text rounded-bottom rounded-top-0 " for="categoryInput">Tipo</label>             
+            {{ form.category(class='form-select p-3 rounded-bottom rounded-top-0', id="categoryInput") }}
+            {{ render_errors(form.category) }}
+        </div>
+        
+        
+        <div class="form-group mb-3">
+            {{ form.submit(class='btn btn-dark w-100 py-2') }}
+        </div>
+    </form>
+</section>
+
+
+{% endblock %}

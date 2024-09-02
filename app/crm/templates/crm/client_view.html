@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <section id="header">
+        {% include '__title.html' %}
+    </section>
+
+    <section>
+        <div class="container my-5">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="text-center mb-4">Detalles del Cliente</h2>
+                </div>
+            </div>
+    
+            <div class="row mb-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header" style="background-color: #b5b5b5;">
+                            <h5 class="card-title">Información General</h5>
+                        </div>
+                        <div class="card-body">
+                            
+                            <p><strong>Nombre:</strong> {{ client.name }}</p>
+                            <p><strong>RUC/Cédula:</strong> {{ client.ruc_or_ci }}</p>
+                            <p><strong>Persona:</strong> {{ client.client_type }}</p>
+                            <p><strong>Categoría:</strong> {{ client.client_category.name or 'N/A' }}</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title">Contacto</h5>
+                        </div>
+                        <div class="card-body">
+                            
+                            <p><strong>Email:</strong> {{ client.email or 'N/A' }}</p>
+                            <p><strong>Teléfono:</strong> {{ client.phone or 'N/A' }}</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-md-12 col-lg-4">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Ubicación</h5>
+                            <p><strong>Dirección:</strong> {{ client.address or 'N/A' }}</p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Contactos Asociados</h5>
+                            {% if client.contacts %}
+                                <ul class="list-group">
+                                    {% for contact in client.contacts %}
+                                        <li class="list-group-item">
+                                            <strong>Nombre:</strong> {{ contact.name }}<br>
+                                            <strong>Email:</strong> {{ contact.email }}<br>
+                                            <strong>Teléfono:</strong> {{ contact.phone or 'N/A' }}<br>
+                                            <strong>Cargo:</strong> {{ contact.position or 'N/A' }}<br>
+                                            <strong>Notas:</strong> {{ contact.notes or 'N/A' }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>No hay contactos asociados a este cliente.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col-12 text-center">
+                    <a href="{{ url_for('crm.update_client', client_id=client.id) }}" class="btn btn-primary">Editar Cliente</a>
+                    <a href="{{ url_for('crm.clients_view') }}" class="btn btn-secondary">Volver a la Lista</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <section id="header">
+        {% include '__title.html' %}
+    </section>
+
+    <section id="profile">
+        <div class="container mb-3">
+            <div class="row mb-3">
+                <img src="{{ url_for('static', filename='img/user.png') }}" class="img-fluid rounded col-md-6 col-lg-4" alt="profile-user-image">
+
+                <div class="col-md-6 d-none d-md-block m-auto">
+                    <div class="card-body mb-4 row">
+                        <h5 class="card-title">{{ user.username }}</h5>
+                        <h6 class="card-subtitle text-muted">{% for role in user.roles %}{{ role.name }}{% endfor %}</h6>
+                        
+                    </div>
+                    <div class="row row-cols-3 text-center mb-3">
+                        <div class="col">
+                            <h4 class="text-muted">30</h4>
+                            <p>Reportes</p>
+                        </div>
+                        <div class="col">
+                            <h4 class="text-muted">20</h4>
+                            <p>Trabajos</p>
+                        </div>
+                        <div class="col">
+                            <h4 class="text-muted">0</h4>
+                            <p>Incidentes</p>
+                        </div>
+                    </div>
+                    <p class="card-text rows"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                </div>
+            </div>
+            <div class="mb-3 col-md-6 d-block d-md-none">
+
+        
+                <div class="card-body text-center mb-4">
+                <h5 class="card-title">{{ user.username }}</h5>
+                <h6 class="card-subtitle text-muted">{% for role in user.roles %}{{ role.name }}{% endfor %}</h6>
+                <p class="card-text fst-italic"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                </div>
+
+            
+                <div class="row row-cols-3 text-center">
+                    <div class="col">
+                        <h4 class="text-muted">30</h4>
+                        <p>Reportes</p>
+                    </div>
+                    <div class="col">
+                        <h4 class="text-muted">20</h4>
+                        <p>Trabajos</p>
+                    </div>
+                    <div class="col">
+                        <h4 class="text-muted">0</h4>
+                        <p>Incidentes</p>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+    </section>
+
+    <section id="btn-edit">
+        <div class="row my-5">         
+            <a href="{{ url_for('users.profile_edition', user_id=user.id) }}" class="text-decoration-none btn btn-secondary col-md-8 mx-auto">
+                Editar perfil
+            </a>
+        </div>
+
+        
+    </section>
+
+    <section id="user-info">
+
+        <div class="container col-md-8 mx-auto table-responsive table-sm">
+            <h6 class="p-2">Datos de usuario</h6>
+            <table class="table table-borderless table">
+                <tr>
+                    <td>CI:</td>
+                    <td>{{ user.ci }}</td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <td>Fecha de nacimiento:</td>
+                    <td>{{ user.birthday if user.birthday else 'Sin registro' }}</td>
+                </tr>
+                <tr>
+                    <td>Descripci&oacute;n:</td>
+                    <td></td>
+                </tr>
+            </table>
+            
+        </div>
+        
+    </section>
+{% endblock %}

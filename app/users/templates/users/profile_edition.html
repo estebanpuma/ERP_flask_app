@@ -1,0 +1,118 @@
+{% from "macros.html" import render_errors %}
+
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <section id="header">
+        {% include '__title.html' %}
+    </section>
+
+    <section id="profile">
+        <div class="container mb-3">
+            <div class="d-flex justify-content-center mb-3">
+                <img src="{{ url_for('static', filename='img/user.png') }}" class="img" alt="profile-user-image" style="width: 150px;">
+
+                <div class="my-auto">
+                    <a href="" class="btn btn-dark">Cambiar foto</a>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section id="user-info">
+        <form action="" method="post" id="editProfileForm" novalidate>
+            {{ form.hidden_tag() }}
+
+            <div class="container mx-auto table-responsive table-sm">
+                <h6 class="p-2">Datos de usuario</h6>
+                <table class="table table-borderless table">
+                    <tr>
+                        <td>Nombre:</td>
+                        <td>
+                            {{ form.username(class='form-control', id="nameInput", value=user.username ) }}
+                            {{ render_errors(form.username) }}  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Cargo:</td>
+                        <td>
+               
+                                
+                            {% for role in user.roles %}
+                                {{ form.role(class='form-select', id=role.id) }}
+                                {{ render_errors(form.role) }}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% if current_user.has_role('admin') %}
+                    <tr>
+                        <td>CI:</td>
+                        <td>
+                            {{ form.ci(class='form-control', id="ciInput" ) }}
+                            {{ render_errors(form.ci) }}  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Email:</td>
+                        <td>
+                            {{ form.email(class='form-control', id="emailInput") }}
+                            {{ render_errors(form.email) }} 
+                        </td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td>Password:</td>
+                        <td>
+                            {{ form.password(class='form-control', id="passwordInput", placeholder="******") }}
+                            {{ render_errors(form.password) }} 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Fecha de nacimiento:</td>
+                        <td>
+                            {{ form.birthday(class='form-control', id="birthInput") }}
+                            {{ render_errors(form.birthday) }} 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Descripci&oacute;n:</td>
+                        <td></td>
+                    </tr>
+
+                </table>
+                <div class="form-group mb-3">
+                    {{ form.submit(class='btn btn-dark w-100 py-2') }}
+                </div>
+            </div>
+
+        </form>
+        
+        
+    </section>
+
+    <script>
+        console.log("Probando sin DOMContentLoaded");
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("entra")
+            var roleSelects = document.querySelectorAll('select');
+            
+            console.log(roleSelects)
+            roleSelects.forEach(function(select) {
+                var currentRoleId = select['id']
+
+                    for (var i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === currentRoleId) {
+                            select.options[i].selected = true;
+                            console.log('iprime', currentRoleId)
+                            break;
+                        }
+                    }
+            });
+        });
+        </script>
+
+
+{% endblock %}

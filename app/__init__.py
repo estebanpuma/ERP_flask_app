@@ -28,8 +28,8 @@ def create_app(config):
     migrate.init_app(app, db)
 
     with app.app_context():
-        from .models import initialize_admin_user  # Importar modelos después de inicializar db
-        initialize_admin_user()
+        from .models import initialize_admin_user  
+        #initialize_admin_user()
 
     from .admin import admin_bp
     app.register_blueprint(admin_bp)
@@ -37,8 +37,17 @@ def create_app(config):
     from .auth import auth_bp
     app.register_blueprint(auth_bp)
 
+    from .crm import crm_bp
+    app.register_blueprint(crm_bp)
+
     from .public import public_bp
     app.register_blueprint(public_bp)
+
+    from .sales import sales_bp
+    app.register_blueprint(sales_bp)
+
+    from .users import users_bp
+    app.register_blueprint(users_bp)
 
     return app
 

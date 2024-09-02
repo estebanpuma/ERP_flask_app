@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <section id="header">
+        {% include '__title.html' %}
+    </section>
+
+    <section>
+        <div>
+            <a href="{{ url_for('crm.clients_view') }}" class="text-decoration-none">
+                <div class="card">
+                    <div>
+                        <div class="card-body d-flex justify-content-between">
+                            <div class="d-flex">
+                                <div class="w-25">
+                                    <img src="{{ url_for('static', filename='img/crm/clients.jpg') }}" alt="Clientes" class="rounded-circle img-fluid">
+                                </div>
+                                <div class="p-2">
+                                    <h5 class="card-title">Clientes</h5>
+                                    <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
+                                    <p class="card-text">Lista de clientes</p>
+                                </div>
+                                
+                            </div>
+                            <div class="my-auto text-muted">
+                                <i class="bi bi-chevron-right fs-2"></i>
+                            </div>           
+                        </div>
+                    </div>
+  
+                </div>         
+            </a>
+        </div>
+    </section>
+
+{% endblock %}

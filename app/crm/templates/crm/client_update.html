@@ -1,0 +1,131 @@
+{% from "macros.html" import render_errors %}
+
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <section id="header">
+        {% include '__title.html' %}
+    </section>
+
+    <section id="user-info">
+        <form action="" method="post" id="editClientForm" novalidate>
+            {{ form.hidden_tag() }}
+
+            <div class="container mx-auto table-responsive table-sm">
+                <h6 class="p-2">Datos del cliente</h6>
+                <table class="table table-borderless table">
+                    <tr>
+                        <td>Persona:</td>
+                        <td>
+                            <div class="form-group ms-2">
+                                <fieldset class="row mb-2">
+                                    <div class="col-sm-10 row ms-2">
+                                        {% for subfield in form.client_type %}
+                                            <div class="form-check col-md-6">
+                                                {{ subfield(class='form-check-input', id=subfield.id) }}
+                                                <label class="form-check-label" for="{{ subfield.id }}">
+                                                    {{ subfield.label.text }}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                        {{ render_errors(form.client_type) }}
+                                    </div>
+                                </fieldset>
+                            </div> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>RUC/CI</td>
+                        <td>
+                            <div class="input-group">
+                                {{ form.ruc_or_ci(class='form-control', id="nameInput" ) }}
+                                {{ render_errors(form.ruc_or_ci) }} 
+                                <div class="input-group-text rounded-bottom-0">
+                                    <div>
+                                        <label class="" for="CI"><small>CI</small></label>
+                                        {{ form.is_ci(class='form-check-input') }}
+                                    </div>
+                                    
+                                </div> 
+                            </div>
+                            
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Razón social:</td>
+                        <td>
+                            {{ form.name(class='form-control', id="nameInput" ) }}
+                            {{ render_errors(form.name) }}  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Tipo:
+                        </td>
+                        <td>
+                            {{ form.category(class='form-select') }}
+                            {{ render_errors(form.category) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Telefono</td>
+                        <td>
+                            {{ form.phone(class='form-control') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Dirección:</td>
+                        <td>
+                            {{ form.address(class='form-control') }}
+                            {{ render_errors(form.address) }} 
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Email:</td>
+                        <td>
+                            {{ form.email(class='form-control', id="emailInput") }}
+                            {{ render_errors(form.email) }} 
+                        </td>
+                    </tr>
+                    
+                    
+                    
+
+                </table>
+                <div class="form-group mb-3">
+                    {{ form.submit(class='btn btn-dark w-100 py-2') }}
+                </div>
+            </div>
+
+        </form>
+        
+        
+    </section>
+
+    <script>
+        console.log("Probando sin DOMContentLoaded");
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("entra")
+            var roleSelects = document.querySelectorAll('select');
+            
+            console.log(roleSelects)
+            roleSelects.forEach(function(select) {
+                var currentRoleId = select['id']
+
+                    for (var i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === currentRoleId) {
+                            select.options[i].selected = true;
+                            console.log('iprime', currentRoleId)
+                            break;
+                        }
+                    }
+            });
+        });
+        </script>
+
+
+{% endblock %}
