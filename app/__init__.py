@@ -8,6 +8,7 @@ from flask_migrate import Migrate
 
 from jinja2 import TemplateNotFound
 
+import app
 
 db = SQLAlchemy()
 
@@ -43,6 +44,9 @@ def create_app(config):
     from .public import public_bp
     app.register_blueprint(public_bp)
 
+    from .production import production_bp
+    app.register_blueprint(production_bp)
+
     from .sales import sales_bp
     app.register_blueprint(sales_bp)
 
@@ -65,3 +69,4 @@ def register_error_handlers(app):
     @app.errorhandler(TemplateNotFound)
     def handle_template_not_found():
          return render_template('error.html', message="Lo sentimos, la página que buscas no se pudo encontrar."), 404
+    

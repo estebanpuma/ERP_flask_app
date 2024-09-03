@@ -35,24 +35,24 @@ class BaseModel(db.Model):
                 raise ValidationError("Validation failed")
             db.session.add(self)
             db.session.commit()
-            return True
+            return True, None
         except ValidationError as e:
             # Aquí podrías loguear el error de validación
-            return False
+            return False, str(e)
         except SQLAlchemyError as e:
             db.session.rollback()
             # Aquí podrías loguear el error de base de datos
-            return False
+            return False, str(e)
 
     def delete(self):
         try:
             db.session.delete(self)
             db.session.commit()
-            return True
+            return True, None
         except SQLAlchemyError as e:
             db.session.rollback()
             # Aquí podrías loguear el error
-            return False
+            return False, str(e)
 
     @classmethod
     def get_by_id(cls, id):

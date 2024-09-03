@@ -52,4 +52,4 @@ def validate_ruc_or_ci(form, field):
                 raise ValidationError('El RUC debe tener 13 dígitos.')
     elif form.client_type.data == 'juridica':  # RUC de persona jurídica
         if len(ruc_or_ci) != 13:
-            raise ValidationError('El RUC debe tener 13 dígitos para personas jurídicas.')
+            raise ValidationError('El RUC debe tener 13 dígitos')

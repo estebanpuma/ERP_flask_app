@@ -20,7 +20,24 @@ class ProductCategory(BaseModel):
     description = db.Column(db.String(200), nullable=True)
     is_deleted = db.Column(db.Boolean, default=False)
 
-    products = db.relationship('Product', back_populates='category')
+    products = db.relationship('Product', back_populates='category', cascade='all, delete-orphan')
+    sub_categories = db.relationship('ProductSubCategory', back_populates='category', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'<ProductCategory(name={self.name})>'
+    
+
+class ProductSubCategory(BaseModel):
+    __tablename__ = 'product_sub_categories'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False, unique=True)
+    description = db.Column(db.String(200), nullable=True)
+    category_id = db.Column(db.Integer, db.ForeignKey('product_categories.id', ondelete='Cascade'), nullable=False)
+    is_deleted = db.Column(db.Boolean, default=False)
+
+    category = db.relationship('ProductCategory', back_populates='sub_categories')
+    products = db.relationship('Product', back_populates='sub_category', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<ProductCategory(name={self.name})>'
@@ -33,16 +50,73 @@ class Product(BaseModel):
     code = db.Column(db.String(20), nullable=False, unique=True)  # Código único del modelo
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(255), nullable=True)
-    price = db.Column(db.Float, nullable=False)
-
+    
     category_id = db.Column(db.Integer, db.ForeignKey('product_categories.id'), nullable=False)
+    sub_category_id = db.Column(db.Integer, db.ForeignKey('product_sub_categories.id'), nullable=False)
+
+    is_deleted = db.Column(db.Boolean, default=False)
+
     category = db.relationship('ProductCategory', back_populates='products')
+    sub_category = db.relationship('ProductSubCategory', back_populates='products')
 
     colors = db.relationship('Color', secondary=product_color_association, back_populates='products')
     sizes = db.relationship('Size', secondary=product_size_association, back_populates='products')
 
+    stock = db.relationship('Stock', back_populates='product')
+
+    material_details = db.relationship('ProductMaterialDetail', back_populates='product', cascade="all, delete-orphan")
+
     def __repr__(self):
         return f'<Product(code={self.code}, name={self.name})>'
+    
+
+class Material(BaseModel):
+    __tablename__ = 'materials'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(50), nullable=False, unique=True)  # Ejemplo: 'Cuero', 'Textil', 'Sintético'
+
+    description = db.Column(db.String(), nullable=True)
+
+    product_material_details = db.relationship('ProductMaterialDetail', back_populates='material')
+
+    def __repr__(self):
+        return f'<Material(name={self.name})>'
+    
+
+class ProductMaterialDetail(BaseModel):
+    __tablename__ = 'product_material_details'
+
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    material_id = db.Column(db.Integer, db.ForeignKey('materials.id'), nullable=False)
+    quantity = db.Column(db.Float, nullable=False, default=1.0)
+
+    product = db.relationship('Product', back_populates='material_details')
+    material = db.relationship('Material', back_populates='product_material_details')
+
+    def __repr__(self):
+        return f'<ProductMaterialDetail(product={self.product.name}, material={self.material.name}, quantity={self.quantity})>'
+
+
+class Stock(BaseModel):
+    __tablename__ = 'stocks'
+
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    product = db.relationship('Product', back_populates='stock')
+
+    size_id = db.Column(db.Integer, db.ForeignKey('sizes.id'), nullable=False)
+    size = db.relationship('Size')
+
+    color_id = db.Column(db.Integer, db.ForeignKey('colors.id'), nullable=False)
+    color = db.relationship('Color')
+
+    quantity = db.Column(db.Integer, nullable=False, default=0)
+
+    def __repr__(self):
+        return f'<Stock(product={self.product.name}, size={self.size.value}, color={self.color.name}, quantity={self.quantity})>'
 
 
 class Color(BaseModel):
@@ -56,6 +130,9 @@ class Color(BaseModel):
 
     def __repr__(self):
         return f'<Color(name={self.name})>'
+    
+
+
 
 
 class SizeSeries(BaseModel):
@@ -86,32 +163,4 @@ class Size(BaseModel):
         return f'<Size(value={self.value}, series={self.series.name})>'
 
 
-class Material(BaseModel):
-    __tablename__ = 'materials'
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False, unique=True)  # Ejemplo: 'Cuero', 'Textil', 'Sintético'
-
-    products = db.relationship('Product', back_populates='material')
-
-    def __repr__(self):
-        return f'<Material(name={self.name})>'
-
-
-class Stock(BaseModel):
-    __tablename__ = 'stocks'
-
-    id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
-    product = db.relationship('Product', back_populates='stock')
-
-    size_id = db.Column(db.Integer, db.ForeignKey('sizes.id'), nullable=False)
-    size = db.relationship('Size')
-
-    color_id = db.Column(db.Integer, db.ForeignKey('colors.id'), nullable=False)
-    color = db.relationship('Color')
-
-    quantity = db.Column(db.Integer, nullable=False, default=0)
-
-    def __repr__(self):
-        return f'<Stock(product={self.product.name}, size={self.size.value}, color={self.color.name}, quantity={self.quantity})>'

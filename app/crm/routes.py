@@ -47,9 +47,9 @@ def add_client():
     if form.validate_on_submit():
 
         if save_client(form=form):
-            flash("todo bien nano", 'success')
+            flash('Cliente guardado exitosamente.', 'success')
         else:
-            flash("no no no otravez sufriendo no", 'danger')
+            flash('Error al guardar el cliente', 'danger')
         return redirect(url_for('crm.clients_view'))
     
     return render_template('crm/add_client.html',
@@ -75,3 +75,5 @@ def update_client(client_id):
     return render_template('crm/client_update.html',
                            title = title,
                            form = form)
+
+

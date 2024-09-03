@@ -27,7 +27,7 @@ class Client(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     address = db.Column(db.String(200), nullable=True)
-    email = db.Column(db.String(120), nullable=True, unique=True)
+    email = db.Column(db.String(120), nullable=True, unique=False)
     phone = db.Column(db.String(20), nullable=True)
     ruc_or_ci = db.Column(db.String(13), nullable=True, unique=True)  # Puede ser cédula o RUC
     

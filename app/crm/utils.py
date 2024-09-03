@@ -17,15 +17,13 @@ def save_client(form):
         email=form.email.data,
         client_category_id=form.category.data if form.category.data else None
     )
-
-    try:
+    
         # Guardar el cliente en la base de datos
-        client.save()
-        flash('Cliente guardado exitosamente.', 'success')
+    success, error = client.save()
+    if success:
         return True
-    except Exception as e:
-        # Manejar errores de base de datos
-        flash(f'Error al guardar el cliente: {str(e)}', 'danger')
+    else:
+        flash(f'Error al guardar: {error}', 'danger')
         return False
 
 
