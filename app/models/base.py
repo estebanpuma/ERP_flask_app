@@ -1,3 +1,5 @@
+from flask import current_app
+
 from sqlalchemy.exc import SQLAlchemyError
 
 from datetime import datetime
@@ -35,23 +37,25 @@ class BaseModel(db.Model):
                 raise ValidationError("Validation failed")
             db.session.add(self)
             db.session.commit()
+            current_app.logger.info(f'Registro guardado: {self}')
             return True, None
         except ValidationError as e:
-            # Aquí podrías loguear el error de validación
+            current_app.logger.warning(f'ValidationError: {e}')
             return False, str(e)
         except SQLAlchemyError as e:
             db.session.rollback()
-            # Aquí podrías loguear el error de base de datos
+            current_app.logger.warning(f'SQLAlchemyError: {e}')
             return False, str(e)
 
     def delete(self):
         try:
             db.session.delete(self)
             db.session.commit()
+            current_app.logger.info(f'Registro eliminado: {self}')
             return True, None
         except SQLAlchemyError as e:
             db.session.rollback()
-            # Aquí podrías loguear el error
+            current_app.logger.warning(f'SQLAlchemyError: {e}')
             return False, str(e)
 
     @classmethod

@@ -10,24 +10,23 @@ from .forms import SignupForm, RoleForm
 from . import admin_bp
 
 
-@admin_bp.route('/users_view')
-def users_view():
+@admin_bp.route('/user/view')
+def view_users():
     title = 'Usuarios'
-
+    prev_url = url_for('public.index')
     users = User.query.all()
-
-
    
-
-    return render_template('admin/users_view.html',
+    return render_template('admin/view_users.html',
                            title = title,
-                           users = users)
+                           users = users,
+                           prev_url = prev_url)
 
 
-@admin_bp.route('/add_user', methods=['GET', 'POST'])
+@admin_bp.route('/user/add', methods=['GET', 'POST'])
 @login_required
 def add_user():
     title = 'Nuevo Usuario'
+    prev_url = url_for('admin.view_users')
     form = SignupForm()
     
     if form.validate_on_submit():
@@ -37,28 +36,31 @@ def add_user():
         else:
             flash('Ocurrio un error al intenar guardar', 'danger')
 
-        return redirect(url_for('admin.users_view'))
+        return redirect(url_for('admin.view_users'))
 
     return render_template('admin/add_user.html',
                            title = title,
-                           form = form)
+                           form = form,
+                           prev_url = prev_url)
 
 
-@admin_bp.route('/roles_view')
-def roles_view():
+@admin_bp.route('/role/view')
+def view_roles():
     title = 'Roles'
-
+    prev_url = url_for('public.index')
     roles= Role.query.all()
 
-    return render_template('admin/roles_view.html',
+    return render_template('admin/view_roles.html',
                            title = title,
-                           roles = roles)
+                           roles = roles,
+                           prev_url = prev_url)
 
 
-@admin_bp.route('/add_role', methods=['GET', 'POST'])
+@admin_bp.route('/role/add', methods=['GET', 'POST'])
 @login_required
 def add_role():
     title = 'Nuevo rol'
+    prev_url = url_for('admin.view_roles')
     form = RoleForm()
     if form.validate_on_submit():
         name = form.name.data
@@ -70,8 +72,9 @@ def add_role():
         else:
             flash("Hubo un problema al intentar guardar", 'danger')
         
-        return redirect(url_for('admin.roles_view'))
+        return redirect(url_for('admin.view_roles'))
 
     return render_template('admin/add_role.html',
                            title = title,
-                           form = form)
+                           form = form,
+                           prev_url = prev_url)

@@ -1,0 +1,126 @@
+{% from "macros.html" import render_errors %}
+
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+ 
+{% block content %}
+<section id="header">
+    {% include '__title.html' %}
+</section>
+
+<section id="addProduct">
+    <form action="" method="post" id="addProductForm" class="col-md-10 m-auto" novalidate>
+        {{ form.hidden_tag() }}
+
+        <h2 class="h4 fw-normal my-4">Ingrese los datos</h2>
+         
+
+        <div class="form-floating">              
+            {{ form.code(class='form-control rounded-bottom-0 rounded-top', id="codeInput", placeholder="1500804479001") }}
+            <label for="codeInput">Codigo</label>
+            {{ render_errors(form.code) }}
+        </div>
+        <div class="form-floating">              
+            {{ form.name(class='form-control rounded-bottom-0 rounded-top-0', id="nameInput", placeholder="Zapato") }}
+            <label for="nameInput">Nombre</label>
+            {{ render_errors(form.name) }}
+        </div>
+        <div class="form-floating">              
+            {{ form.description(class='form-control rounded-bottom-0 rounded-top-0', id="descriptionInput", placeholder="Ambato, calle 123") }}
+            <label for="descriptionInput">Descripcion</label>
+            {{ render_errors(form.description) }}
+        </div>
+        
+        <div class="input-group"> 
+            <label class="input-group-text rounded-bottom-0 rounded-top-0 " for="categoryInput">Linea</label>             
+            {{ form.category(class='form-select p-3 rounded-bottom-0 rounded-top-0', id="categoryInput") }}
+            <button class="btn btn-dark input-group-text rounded-bottom-0 rounded-top-0 " for="categoryInput"
+            type="button" data-bs-toggle="offcanvas" data-bs-target="#productCategory" aria-controls="productCategory">
+                <i class="bi bi-plus-circle"></i>
+            </button>  
+            {{ render_errors(form.category) }}
+        </div>
+
+        <div class="input-group mb-3"> 
+            <label class="input-group-text rounded-bottom rounded-top-0 " for="subcategoryInput">Sublinea</label>             
+            {{ form.sub_category(class='form-select p-3 rounded-bottom rounded-top-0', id="subcategoryInput") }}
+            <button class="btn btn-dark input-group-text rounded-bottom rounded-top-0 " for="subcategoryInput"
+            type="button" data-bs-toggle="offcanvas" data-bs-target="#productSubCategory" aria-controls="productSubCategory">
+                <i class="bi bi-plus-circle"></i>
+            </button>                    
+        </div>
+        {{ render_errors(form.sub_category) }}
+        
+        <div class="form-group mb-3">
+            {{ form.submit(class='btn btn-dark w-100 py-2') }}
+        </div>
+    </form>
+    
+    <div class="offcanvas offcanvas-end bg-body-tertiary" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="productCategory" aria-labelledby="productCategoryLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="productCategoryLabel">Linea</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            {% include 'products/__productCategoryForm.html' %}
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end bg-body-tertiary" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="productSubCategory" aria-labelledby="productSubCategoryLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="productSubCategoryLabel">Sub Linea</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            {% include 'products/__productSubcategoryForm.html' %}
+        </div>
+    </div>
+
+    
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const productForm = document.getElementById('addProductForm');
+    const productCode = document.getElementById('codeInput');
+    const productName = document.getElementById('nameInput');
+    const productDescription = document.getElementById('descriptionInput');
+    const productCategory = document.getElementById('categoryInput');
+    const productSubCategory = document.getElementById('subcategoryInput');
+
+    // Recuperar datos del localStorage (si existen)
+    if (localStorage.getItem('productData')) {
+        const productData = JSON.parse(localStorage.getItem('productData'));
+        productCode.value = productData.code || '';
+        productName.value = productData.name || '';
+        productDescription.value = productData.description || '';
+        productCategory.value = productData.category || '';
+        productSubCategory.value = productData.sub_category || '';
+    }
+
+    // Guardar los datos en localStorage antes de abrir el formulario de Categoría o Subcategoría
+    const saveProductData = () => {
+        const productData = {
+            code: productCode.value,
+            name: productName.value,
+            description: productDescription.value,
+            category: productCategory.value,
+            sub_category: productSubCategory.value
+        };
+        localStorage.setItem('productData', JSON.stringify(productData));
+    };
+
+    // Eventos para guardar los datos al abrir los offcanvas (categoría o subcategoría)
+    document.querySelector('[data-bs-target="#productCategory"]').addEventListener('click', saveProductData);
+    document.querySelector('[data-bs-target="#productSubCategory"]').addEventListener('click', saveProductData);
+
+    // Limpiar localStorage cuando el formulario principal se envía
+    productForm.addEventListener('submit', function() {
+        localStorage.removeItem('productData');
+    });
+});
+
+
+</script>
+{% endblock %}

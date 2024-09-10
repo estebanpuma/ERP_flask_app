@@ -1,0 +1,20 @@
+<form action="" method="post" id="addCategoryProductForm" class="col-md-10 m-auto" novalidate>
+    {{ formCategory.hidden_tag() }}
+
+    <h2 class="h4 fw-normal my-4">Ingrese los datos</h2>
+
+    <div class="form-floating">              
+        {{ formCategory.name(class='form-control rounded-bottom-0 rounded-top-0',  placeholder="Zapato") }}
+        <label for="nameInput">Nombre</label>
+        {{ render_errors(formCategory.name) }}
+    </div>
+    <div class="form-floating">              
+        {{ formCategory.description(class='form-control rounded-bottom-0 rounded-top-0', placeholder="Ambato, calle 123") }}
+        <label for="descriptionInput">Descripcion</label>
+        {{ render_errors(formCategory.description) }}
+    </div>
+
+    <div class="form-group mb-3">
+        {{ formCategory.submit(class='btn btn-dark w-100 py-2') }}
+    </div>
+</form>

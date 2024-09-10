@@ -17,16 +17,20 @@ def profile(user_id):
     user = User.query.get_or_404(user_id)
 
     title = 'Perfil'
+    prev_url = url_for('public.index')
+    if current_user.has_role('admin'):
+        prev_url = url_for('admin.view_users')
 
     return render_template('users/profile.html',
                            title = title,
-                           user = user)
+                           user = user,
+                           prev_url = prev_url)
 
 
 
-@users_bp.route('/profile_edition/<int:user_id>', methods=['GET', 'POST'])
+@users_bp.route('/profile/<int:user_id>/update', methods=['GET', 'POST'])
 @login_required
-def profile_edition(user_id):
+def profile_update(user_id):
 
     if current_user.id == int(user_id) or current_user.has_role('admin'):
 
@@ -35,9 +39,10 @@ def profile_edition(user_id):
     else:
         flash('No posee los permisos necesarios para realizar la accion', 'warning')
         return redirect(url_for('users.profile', user_id=current_user.id))
-
-    form = UpdateUserForm(obj=user)
     title = 'Editar perfil'
+    prev_url = url_for('users.profile', user_id=user_id)
+    form = UpdateUserForm(obj=user)
+    
 
     if form.validate_on_submit():
 
@@ -49,7 +54,8 @@ def profile_edition(user_id):
 
         return redirect(url_for('users.profile', user_id = user.id))
     
-    return render_template('users/profile_edition.html',
+    return render_template('users/profile_update.html',
                            title = title,
                            user = user,
-                           form = form)
+                           form = form,
+                           prev_url = prev_url)

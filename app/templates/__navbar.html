@@ -40,10 +40,10 @@
                         </div>
                         {% if current_user.username == 'admin' %}
                           <div>
-                            <a href="{{ url_for('admin.roles_view') }}">Roles</a>
+                            <a href="{{ url_for('admin.view_roles') }}">Roles</a>
                           </div>
                           <div>
-                            <a href="{{ url_for('admin.users_view') }}">Usuarios</a>
+                            <a href="{{ url_for('admin.view_users') }}">Usuarios</a>
                           </div>
                         {% endif %}
                         <div>

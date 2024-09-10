@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <section id="header">
+        {% include '__title.html' %}
+    </section>
+
+    <section>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <th>Codigo</th>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Vendedor</th>
+                    <th>Estado</th>
+                </thead>
+                <tbody>
+                {% for purchase_order in purchase_orders %}
+                    <tr>
+                        <td>{{ purchase_order.code }}</td>
+                        <td>{{ purchase_order.date }}</td>
+                        <td>{{ purchase_order.client }}</td>
+                        <td>{{ purchase_order.vendor }}</td>
+                        <td>{{ purchase_order.status }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+    <section>
+        {% for purchase_order in purchase_orders %}
+        <div class="container mb-3">
+            {% set href = "#" %}
+            {% set card_title = purchase_order.code %}
+            {% set card_subtitle = purchase_order.client %}
+            {% set card_text = purchase_order.date %}
+            {% set span = purchase_order.status %}
+
+            {% include 'crm/__cardList.html' %}
+        </div>
+        {% endfor %}
+    </section>
+
+{% endblock %}

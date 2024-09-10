@@ -28,6 +28,9 @@ def create_app(config):
     db.init_app(app)
     migrate.init_app(app, db)
 
+    from .logs import setup_logging
+    setup_logging(app)
+    
     with app.app_context():
         from .models import initialize_admin_user  
         #initialize_admin_user()
@@ -46,6 +49,9 @@ def create_app(config):
 
     from .production import production_bp
     app.register_blueprint(production_bp)
+
+    from .products import products_bp
+    app.register_blueprint(products_bp)
 
     from .sales import sales_bp
     app.register_blueprint(sales_bp)

@@ -83,7 +83,7 @@
             <div class="row">
                 <div class="col-12 text-center">
                     <a href="{{ url_for('crm.update_client', client_id=client.id) }}" class="btn btn-primary">Editar Cliente</a>
-                    <a href="{{ url_for('crm.clients_view') }}" class="btn btn-secondary">Volver a la Lista</a>
+                    <a href="{{ prev_url }}" class="btn btn-secondary">Volver a la Lista</a>
                 </div>
             </div>
         </div>

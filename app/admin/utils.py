@@ -1,4 +1,4 @@
-from flask import redirect, flash
+from flask import redirect, flash, current_app
 
 from app.models import User, Role
 
@@ -21,10 +21,12 @@ def save_user(form):
     
     user.set_password(password)
 
-    if user.save():
-        return True
-        
+    success, error = user.save()
 
+    if success:
+        return True
     else:
+        current_app.logger.warning(f'error: {error}')
         return False
+
         

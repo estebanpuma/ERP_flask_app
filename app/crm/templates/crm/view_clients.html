@@ -7,32 +7,31 @@
         {% include '__title.html' %}
     </section>
 
-    <a href="{{ url_for('prodcution.add_product') }}" class="btn bg-body-tertiary text-decoration-none text-white" data-bs-theme="dark"  >
-        <i class="bi bi-add me-2 fs-4"></i> Nuevo Producto
+    <a href="{{ url_for('crm.add_client') }}" class="btn bg-body-tertiary text-decoration-none text-white" data-bs-theme="dark"  >
+        <i class="bi bi-person-add me-2 fs-4"></i> Nuevo Cliente
     </a>
 
     <section id="table-roles" class="d-none d-md-block">
         <div class="table-responsive mt-3">
             <table class="table table-hover">
                 <thead>
-                    <th>Codigo</th>
-                    <th>Producto</th>
-                    <th>Categoria</th>
-                    <th>Sub categoria</th>
+                    <th>Nombre o Raz&oacute;n social</th>
+                    <th>Ruc o CI</th>
+                    <th>Tel&eacute;fono</th>
                     <th></th>
                 </thead>
                 <tbody>
-                    {% for product in products %}
+                    {% for client in clients %}
                         <tr>
-                            <td>{{ product.name }}</td>
+                            <td>{{ client.name }}</td>
                             <td>
-                                {{ product.category }}
+                                {{ client.ruc_or_ci }}
                             </td>
                             <td>
-                                {{ product.sub_category }}
+                                {{ client.phone }}
                             </td>
                             <td>
-                                <a href="{{ url_for('production.product_view', product_id=product.id) }}" class="text-decoration-none">
+                                <a href="{{ url_for('crm.view_client', client_id=client.id) }}" class="text-decoration-none">
                                     <i class="bi bi-chevron-right"></i>
                                 </a>
                                 
@@ -44,17 +43,17 @@
         </div>
     </section>
     <section id="roles-list" class="d-block d-md-none mt-3">
-        {% for product in products %}
-        <a href="{{ url_for( 'production.product_view', product_id=product.id) }}" class="text-decoration-none">
+        {% for client in clients %}
+        <a href="{{ url_for( 'crm.view_client', client_id=client.id) }}" class="text-decoration-none">
             <div class="card mb-3">
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="card-title">{{product.name }}</h5>
+                        <h5 class="card-title">{{client.name }}</h5>
                         <h6 class="card-subtitle text-body-secondary mb-2">
-                            {{ product.category }}
+                            {{ client.ruc_or_ci }}
                         </h6>
                         <p class="card-text">
-                            {{ product.phone }}
+                            {{ client.phone }}
                         </p>
                     </div>
                     <div class="d-flex flex-column align-items-end">
