@@ -4,26 +4,24 @@ import os
 
 
 def setup_logging(app):
-    """Configura el sistema de logging para la aplicación Flask."""
+ 
     
-    # Establecer el nivel de logging para la aplicación
-    app.logger.setLevel(logging.INFO)
-
-    # Crear un manejador de archivo de log con rotación
+    """Configuracion de los loggers."""
     if not os.path.exists('logs'):
         os.mkdir('logs')
-    file_handler = RotatingFileHandler('logs/app.log', maxBytes=10240, backupCount=10)
-    
-    # Formateador de log
-    file_handler.setFormatter(logging.Formatter(
+
+    info_handler = RotatingFileHandler('logs/info.log', maxBytes=10240, backupCount=10)
+    info_handler.setLevel(logging.INFO)
+    info_handler.setFormatter(logging.Formatter(
         '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
     ))
 
-    # Establecer el nivel del manejador de archivo
-    file_handler.setLevel(logging.INFO)
-    
-    # Agregar el manejador al logger de la aplicación
-    app.logger.addHandler(file_handler)
+    warning_handler = RotatingFileHandler('logs/warning.log', maxBytes=10240, backupCount=10)
+    warning_handler.setLevel(logging.WARNING)
+    warning_handler.setFormatter(logging.Formatter(
+        '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+    ))
 
-    # Log inicial para indicar que la configuración de logging está lista
-    app.logger.info('Sistema de logging configurado')
+    app.logger.addHandler(info_handler)
+    app.logger.addHandler(warning_handler)
+    app.logger.setLevel(logging.INFO)  # Configura el nivel de logging general

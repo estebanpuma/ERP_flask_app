@@ -1,5 +1,9 @@
 from flask import Flask, render_template
 
+from flask_restful import Api
+
+from flask_marshmallow import Marshmallow 
+
 from flask_login import LoginManager
 
 from flask_sqlalchemy import SQLAlchemy
@@ -8,11 +12,14 @@ from flask_migrate import Migrate
 
 from jinja2 import TemplateNotFound
 
-import app
 
 db = SQLAlchemy()
 
 migrate = Migrate()
+
+ma = Marshmallow()
+
+api = Api()
 
 login_manager = LoginManager()
 
@@ -27,7 +34,14 @@ def create_app(config):
 
     db.init_app(app)
     migrate.init_app(app, db)
+    ma.init_app(app)
 
+    #Rutas para APIs
+    from app.resources.product_api import ProductResource
+    api.add_resource(ProductResource, '/api/products', '/api/products/<int:product_id>')
+  
+
+    api.init_app(app)
     from .logs import setup_logging
     setup_logging(app)
     
@@ -58,6 +72,10 @@ def create_app(config):
 
     from .users import users_bp
     app.register_blueprint(users_bp)
+
+
+
+    
 
     return app
 

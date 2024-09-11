@@ -2,47 +2,76 @@ from flask import current_app
 
 from app.models import Product, ProductCategory, ProductSubCategory
 
-
-def save_product(form):
-
-    code = form.code.data
-    name = form.name.data
-    description = form.description.data
-    category_id = form.category.data
-    sub_category_id = form.sub_category.data
-
-    product = Product(
-        code = code,
-        name = name,
-        description = description,
-        category_id = category_id,
-        sub_category_id = sub_category_id
-    )
-
-    success, error = product.save()
-
-    if success:
-        return True
-    else:
-        current_app.logger.warning(f'error al guardar producto nuevo. Msg: {error}')
-        return False
+from marshmallow import ValidationError
 
 
-def update_product(form, product):
+class ProductService:
+    @staticmethod
+    def create_product(product_data):
+        category = ProductCategory.query.get(product_data['product-category'])
+        sub_category = ProductSubCategory.query.get(product_data['product-sub_category'])
+        if not category:
+            raise ValidationError('Invalid category_id')
+        if not sub_category:
+            raise ValidationError('Invalid sub_category_id')
 
-    product.code = form.code.data
-    product.name = form.name.data
-    product.description = form.description.data
-    product.category_id = form.category.data
-    product.sub_category_id = form.sub_category.data
+        product = Product(
+            code=product_data['product-code'],
+            name=product_data['product-name'],
+            description=product_data['product-description'],
+            category_id = product_data['product-category'],
+            sub_category_id=product_data['product-sub_category']
+            
+        )
+        success, error = product.save()
+        if success:
+            return product
+        else:
+            current_app.logger.warning(f'error al guardar producto nuevo. Msg: {error}')
+            return error
+        
+    def update_product(product, product_data):
 
-    success, error = product.save()
+        category = ProductCategory.query.get(product_data['product-category'])
+        sub_category = ProductSubCategory.query.get(product_data['product-sub_category'])
+        if not category:
+            raise ValidationError('Invalid category_id')
+        if not sub_category:
+            raise ValidationError('Invalid sub_category_id')
 
-    if success:
-        return True
-    else:
-        current_app.logger.warning(f'error al actualizar producto <id:{product.id}> msg: {error}')
-        return False
+        product.code = product_data['product-code']
+        product.name = product_data['product-name']
+        product.description = product_data['product-description']
+        product.category_id = product_data['product-category']
+        product.sub_category_id = product_data['product-sub_category']
+
+        success, error = product.save()
+
+        if success:
+            return True
+        else:
+            current_app.logger.warning(f'error al actualizar producto <id:{product.id}> msg: {error}')
+            return False
+        
+    
+    def disable_product(product_id):
+        product = Product.query.get_or_404(product_id)
+
+        product.is_deleted = True
+
+    @staticmethod
+    def get_product(product_id):
+        return Product.query.get_or_404(product_id)
+
+    @staticmethod
+    def get_all_products():
+        return Product.query.all()
+
+
+
+
+
+
     
 
 def save_product_category(form):

@@ -56,7 +56,7 @@
             {{ form.submit(class='btn btn-dark w-100 py-2') }}
         </div>
     </form>
-    
+
     <div class="offcanvas offcanvas-end bg-body-tertiary" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="productCategory" aria-labelledby="productCategoryLabel">
         <div class="offcanvas-header">
           <h5 class="offcanvas-title" id="productCategoryLabel">Linea</h5>
@@ -119,6 +119,7 @@
     productForm.addEventListener('submit', function() {
         localStorage.removeItem('productData');
     });
+    
 });
 
 

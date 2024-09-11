@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request, session
+from flask import request, render_template, redirect, url_for, flash, request, session, jsonify
 
 from app.models import Product, ProductCategory, ProductSubCategory
 
@@ -6,11 +6,11 @@ from app.utils import update_form_choices
 
 from .forms import ProductForm, ProductCategoryForm, ProductSubCategoryForm
 
-from .services import save_product, save_product_category, save_product_sub_category
-from .services import update_product, update_product_category, update_product_sub_category
-
 from . import products_bp
 
+import requests
+
+API_BASE_URL = "http://localhost:5000/api"
 
 #****************Productos*********************************#
 
@@ -18,7 +18,12 @@ from . import products_bp
 def view_products():
     title = 'Productos'
     prev_url = url_for('production.production')
-    products = Product.query.all()
+    #products = Product.query.all()
+    
+    response = requests.get(f"{API_BASE_URL}/products")
+    
+    products = response.json()
+    
     return render_template('products/view_products.html',
                            title = title,
                            products = products,
@@ -29,7 +34,9 @@ def view_products():
 def view_product(product_id):
     title = 'Producto'
     prev_url = url_for('products.view_products')
-    product = Product.query.get_or_404(product_id)
+    #product = Product.query.get_or_404(product_id)
+    response = requests.get(f"{API_BASE_URL}/products/{product_id}")
+    product = response.json()
 
     return render_template('products/view_product.html',
                            title = title,
@@ -40,37 +47,42 @@ def view_product(product_id):
 @products_bp.route('/product/add', methods=['GET', 'POST'])
 def add_product():
     title = 'Nuevo producto'
-
+    prev_url = url_for('products.view_products')
     form = ProductForm(prefix='product')
     formCategory = ProductCategoryForm(prefix='product-category')
     formSubCategory = ProductSubCategoryForm(prefix='product-sub-category')
 
     # Verificar si el formulario de producto fue enviado
     if 'product-submit' in request.form and form.validate_on_submit():
-        if save_product(form):
+
+        form_data = request.form.to_dict()
+        
+        response = requests.post(f"{API_BASE_URL}/products",json=form_data)
+        response = response.json()
+        
+        if response==200:
             flash('Producto añadido con éxito', 'success')    
             return redirect(url_for('products.view_products'))
         else:
-            flash('Error, no se pudo guardar', "danger")
+            flash(f'Error, no se pudo guardar', "danger")
         
     # Verificar si el formulario de subcategoría fue enviado
     elif 'product-sub-category-submit' in request.form and formSubCategory.validate_on_submit():
-        if save_product_sub_category(formSubCategory):
-            update_form_choices(form.sub_category, ProductSubCategory)
+        ##if request
             flash('Subcategoría añadida con éxito', 'success')
-        else:
-            flash('Error, no se pudo guardar', "danger")
+        ##else:
+            ##flash('Error, no se pudo guardar', "danger")
 
     # Verificar si el formulario de categoría fue enviado
     elif 'product-category-submit' in request.form and formCategory.validate_on_submit():
-        if save_product_category(formCategory):
-            update_form_choices(form.category, ProductCategory)
-            update_form_choices(formSubCategory.category, ProductCategory)
-            flash('Categoría añadida con éxito', 'success')
-        else:
+        ##if save_product_category(formCategory):
+          ##  update_form_choices(form.category, ProductCategory)
+            ##update_form_choices(formSubCategory.category, ProductCategory)
+            ##flash('Categoría añadida con éxito', 'success')
+        ##else:
             flash('Error, no se pudo guardar', "danger")
 
-    prev_url = url_for('products.view_products')
+    
     return render_template('products/add_product.html',
                            title=title,
                            prev_url=prev_url,
