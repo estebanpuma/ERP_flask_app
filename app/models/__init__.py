@@ -1,6 +1,8 @@
-from .users import User, Role, Permission, initialize_admin_user
+from .users import User, Role, Permission, Salesperson, initialize_admin_user
 from .crm import Client, ClientCategory, Contact
 from .inventory import Product, ProductCategory, Color, Size, SizeSeries, ProductSubCategory, Stock
+from .sales import SaleOrder, SaleOrderProduct, ProductPriceHistory
+from .payment import PaymentMethod, PaymentPlan, Installment
 
 all_models = {
     'User': User,

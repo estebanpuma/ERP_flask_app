@@ -1,4 +1,4 @@
-{% from "macros.html" import render_errors, render_input_float %}
+{% from "macros.html" import render_errors %}
 
 {% extends 'base.html' %}
 
@@ -15,37 +15,42 @@
 
         <h2 class="h4 fw-normal my-4">Ingrese los datos</h2>
          
-        
 
         <div class="form-floating">              
-            {{render_input_float(form.code, id='codeInput')}}
+            {{ form.code(class='form-control rounded-bottom-0 rounded-top', id="codeInput", placeholder="1500804479001") }}
+            <label for="codeInput">Codigo</label>
+            {{ render_errors(form.code) }}
         </div>
         <div class="form-floating">              
-            {{render_input_float(form.name, id='nameInput')}}
+            {{ form.name(class='form-control rounded-bottom-0 rounded-top-0', id="nameInput", placeholder="Zapato") }}
+            <label for="nameInput">Nombre</label>
+            {{ render_errors(form.name) }}
         </div>
         <div class="form-floating">              
-            {{render_input_float(form.description, id='descriptionInput')}}
+            {{ form.description(class='form-control rounded-bottom-0 rounded-top-0', id="descriptionInput", placeholder="Ambato, calle 123") }}
+            <label for="descriptionInput">Descripcion</label>
+            {{ render_errors(form.description) }}
         </div>
         
         <div class="input-group"> 
-                         
-            {{render_input_float(form.category, class='form-select', id='categoryInput')}}
+            <label class="input-group-text rounded-bottom-0 rounded-top-0 " for="categoryInput">Linea</label>             
+            {{ form.category(class='form-select p-3 rounded-bottom-0 rounded-top-0', id="categoryInput") }}
             <button class="btn btn-dark input-group-text rounded-bottom-0 rounded-top-0 " for="categoryInput"
             type="button" data-bs-toggle="offcanvas" data-bs-target="#productCategory" aria-controls="productCategory">
                 <i class="bi bi-plus-circle"></i>
             </button>  
-           
+            {{ render_errors(form.category) }}
         </div>
 
         <div class="input-group mb-3"> 
-                      
-            {{render_input_float(form.sub_category, class='form-select', id='subcategoryInput')}}
+            <label class="input-group-text rounded-bottom rounded-top-0 " for="subcategoryInput">Sublinea</label>             
+            {{ form.sub_category(class='form-select p-3 rounded-bottom rounded-top-0', id="subcategoryInput") }}
             <button class="btn btn-dark input-group-text rounded-bottom rounded-top-0 " for="subcategoryInput"
             type="button" data-bs-toggle="offcanvas" data-bs-target="#productSubCategory" aria-controls="productSubCategory">
                 <i class="bi bi-plus-circle"></i>
             </button>                    
         </div>
-
+        {{ render_errors(form.sub_category) }}
         
         <div class="form-group mb-3">
             {{ form.submit(class='btn btn-dark w-100 py-2') }}
@@ -75,48 +80,5 @@
     
 </section>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const productForm = document.getElementById('addProductForm');
-    const productCode = document.getElementById('codeInput');
-    const productName = document.getElementById('nameInput');
-    const productDescription = document.getElementById('descriptionInput');
-    const productCategory = document.getElementById('categoryInput');
-    const productSubCategory = document.getElementById('subcategoryInput');
 
-    // Recuperar datos del localStorage (si existen)
-    if (localStorage.getItem('productData')) {
-        const productData = JSON.parse(localStorage.getItem('productData'));
-        productCode.value = productData.code || '';
-        productName.value = productData.name || '';
-        productDescription.value = productData.description || '';
-        productCategory.value = productData.category || '';
-        productSubCategory.value = productData.sub_category || '';
-    }
-
-    // Guardar los datos en localStorage antes de abrir el formulario de Categoría o Subcategoría
-    const saveProductData = () => {
-        const productData = {
-            code: productCode.value,
-            name: productName.value,
-            description: productDescription.value,
-            category: productCategory.value,
-            sub_category: productSubCategory.value
-        };
-        localStorage.setItem('productData', JSON.stringify(productData));
-    };
-
-    // Eventos para guardar los datos al abrir los offcanvas (categoría o subcategoría)
-    document.querySelector('[data-bs-target="#productCategory"]').addEventListener('click', saveProductData);
-    document.querySelector('[data-bs-target="#productSubCategory"]').addEventListener('click', saveProductData);
-
-    // Limpiar localStorage cuando el formulario principal se envía
-    productForm.addEventListener('submit', function() {
-        localStorage.removeItem('productData');
-    });
-    
-});
-
-
-</script>
 {% endblock %}

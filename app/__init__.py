@@ -37,9 +37,10 @@ def create_app(config):
     ma.init_app(app)
 
     #Rutas para APIs
-    from app.resources.product_api import ProductResource
+    from app.resources.product_api import ProductResource, CategoryResource, ProductSubCategoryResource
     api.add_resource(ProductResource, '/api/products', '/api/products/<int:product_id>')
-  
+    api.add_resource(CategoryResource, '/api/category', '/api/category/<int:category_id>')
+    api.add_resource(ProductSubCategoryResource, '/api/subcategory', '/api/subcategory/<int:subcategory_id>')
 
     api.init_app(app)
     from .logs import setup_logging

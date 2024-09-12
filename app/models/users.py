@@ -6,19 +6,20 @@ from .base import BaseModel, db, ValidationError
 
 import os
 
+from app.models.sales import SaleOrder
 
 
-# Tabla de asociación entre usuarios y roles
-user_roles = db.Table('user_roles',
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-    db.Column('role_id', db.Integer, db.ForeignKey('roles.id'), primary_key=True)
-)
-
-#Modelo Usuario
+#Modelo Base Usuario
 class User(UserMixin, BaseModel):
+
     __tablename__ = 'users'
+
+    __mapper_args__ = {'polymorphic_on': 'user_type', 
+                       'polymorphic_identity': 'user'
+                       }
+
     id = db.Column(db.Integer, primary_key=True)
-    ci = db.Column(db.String, unique=True, nullable=True)
+    ci = db.Column(db.String, unique=True, nullable=False)
     username = db.Column(db.String(64), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password = db.Column(db.String(128), nullable=False)
@@ -26,7 +27,10 @@ class User(UserMixin, BaseModel):
     last_login = db.Column(db.DateTime)
     birthday = db.Column(db.Date, nullable=True)
     description = db.Column(db.Text, nullable=True)
-    roles = db.relationship('Role', secondary=user_roles, back_populates='users')
+    user_type = db.Column(db.String(50)) 
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    role = db.relationship('Role', back_populates='users')
+    permissions = db.relationship('Permission', secondary='user_permissions', back_populates='users')
 
     def __repr__(self):
         return f'<Usuario: {self.username,}, cargo: {self.has_role}>'
@@ -34,12 +38,6 @@ class User(UserMixin, BaseModel):
     def validate(self):
         if not self.username or len(self.username) < 3:
             raise ValidationError("Username must be at least 3 characters long")
-        
-        if not self.email:
-            raise ValidationError("Invalid email format")
-        
-        if not self.password:
-            raise ValidationError("Password is required")
         
         # Aquí agregar más validaciones específicas
         return True
@@ -59,14 +57,36 @@ class User(UserMixin, BaseModel):
                    for role in self.roles 
                    for permission in role.permissions)
 
+class Salesperson(User):
+
+    __tablename__ = 'salespersons'
+
+    __mapper_args__ = {'polymorphic_identity': 'salesperson'}
+
+    id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    sales_orders_count = db.Column(db.Integer, default=0)
+    visits = db.Column(db.Integer, default=0)
+
+    sales_orders = db.relationship('SaleOrder', back_populates='salesperson', lazy=True)
+
+
+class Manager(User):
+    __tablename__ = 'managers'
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'manager'
+    }
+
+    id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    
 
 class Role(BaseModel):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False, index=True)
     description = db.Column(db.String(255))
-    users = db.relationship('User', secondary=user_roles, back_populates='roles')
-    permissions = db.relationship('Permission', secondary='role_permissions', back_populates='roles')
+    users = db.relationship('User', back_populates='role')
+    #permissions = db.relationship('Permission', secondary='role_permissions', back_populates='roles') #permisos al ususario no al rol
 
 
 class Permission(BaseModel):
@@ -74,11 +94,12 @@ class Permission(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False, index=True)
     description = db.Column(db.String(255))
-    roles = db.relationship('Role', secondary='role_permissions', back_populates='permissions')
+    #roles = db.relationship('Role', secondary='role_permissions', back_populates='permissions') #permisos al ususario no al rol
+    users = db.relationship('User', secondary='user_permissions', back_populates='permissions')
 
 # Tabla de asociación entre roles y permisos
-role_permissions = db.Table('role_permissions',
-    db.Column('role_id', db.Integer, db.ForeignKey('roles.id'), primary_key=True),
+user_permissions = db.Table('user_permissions',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
     db.Column('permission_id', db.Integer, db.ForeignKey('permissions.id'), primary_key=True)
 )
 

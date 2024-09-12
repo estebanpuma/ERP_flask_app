@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, url_for, flash, request, session, jsonify
+from flask import request, render_template, redirect, url_for, flash, request, session, jsonify, current_app
 
 from app.models import Product, ProductCategory, ProductSubCategory
 
@@ -19,10 +19,11 @@ def view_products():
     title = 'Productos'
     prev_url = url_for('production.production')
     #products = Product.query.all()
-    
+    current_app.logger.info('ingresa a productVieeew')
     response = requests.get(f"{API_BASE_URL}/products")
-    
+    current_app.logger.info('Obitnen product')
     products = response.json()
+    current_app.logger.info('serializa prdcut')
     
     return render_template('products/view_products.html',
                            title = title,
@@ -64,23 +65,38 @@ def add_product():
             flash('Producto añadido con éxito', 'success')    
             return redirect(url_for('products.view_products'))
         else:
-            flash(f'Error, no se pudo guardar', "danger")
+            flash(f'Error, no se pudo guardar producto', "danger")
         
     # Verificar si el formulario de subcategoría fue enviado
     elif 'product-sub-category-submit' in request.form and formSubCategory.validate_on_submit():
-        ##if request
-            flash('Subcategoría añadida con éxito', 'success')
-        ##else:
-            ##flash('Error, no se pudo guardar', "danger")
+        form_data = request.form.to_dict()
+        
+        response = requests.post(f"{API_BASE_URL}/subcategory",json=form_data)
+        response = response.json()
+        
+        if response==200:
+            update_form_choices(form.category, ProductCategory)
+            update_form_choices(form.sub_category, ProductSubCategory)
+            update_form_choices(formSubCategory.category, ProductCategory)
+            flash('SubLinea agragada con éxito', 'success')    
+        else:
+            flash(f'Error, no se pudo guardar Sublinea', "danger")
 
     # Verificar si el formulario de categoría fue enviado
     elif 'product-category-submit' in request.form and formCategory.validate_on_submit():
-        ##if save_product_category(formCategory):
-          ##  update_form_choices(form.category, ProductCategory)
-            ##update_form_choices(formSubCategory.category, ProductCategory)
-            ##flash('Categoría añadida con éxito', 'success')
-        ##else:
-            flash('Error, no se pudo guardar', "danger")
+        form_data = request.form.to_dict()
+        
+        response = requests.post(f"{API_BASE_URL}/category",json=form_data)
+        response = response.json()
+        
+        if response==200:
+            update_form_choices(form.category, ProductCategory)
+            update_form_choices(formSubCategory.category, ProductCategory)
+            flash('Linea agragada con éxito', 'success')    
+        else:
+            flash(f'Error, no se pudo guardar line', "danger")
+       
+            
 
     
     return render_template('products/add_product.html',

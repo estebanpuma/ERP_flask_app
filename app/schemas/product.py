@@ -9,16 +9,16 @@ from app.models import Product, ProductCategory, ProductSubCategory
 
 class ProductCategorySchema(SQLAlchemyAutoSchema):
     class Meta:
-        model = Product
+        model = ProductCategory
         load_instance = True
 
 class ProductSubCategorySchema(SQLAlchemyAutoSchema):
     class Meta:
-        model = Product
+        model = ProductSubCategory
         include_fk = True
         load_instance = True
 
-    category = fields.Nested(ProductCategorySchema)
+    #category = fields.Nested(ProductCategorySchema)
 
 class ProductSchema(SQLAlchemyAutoSchema):
     class Meta:

@@ -12,3 +12,28 @@
         </ul>
     {% endif %}
 {% endmacro %}
+
+
+{% macro render_input_float(field) %}
+  
+<div class="form-floating">        
+    {{ field(class='form-control', placeholder="input",**kwargs)|safe }}      
+    <label for='{{ kwargs.get('id', field.id) }}'>{{ field.label }}</label>
+    {% if field.errors %}
+        <ul class="error-list list-group mb-3">
+            {% for error in field.errors %}
+                <li >
+                    <span class="text-danger">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        {{ error}}
+                    </span>    
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
+</div>
+  
+
+
+{% endmacro %}

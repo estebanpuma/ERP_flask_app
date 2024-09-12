@@ -50,6 +50,7 @@ class Product(BaseModel):
     code = db.Column(db.String(20), nullable=False, unique=True)  # Código único del modelo
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(255), nullable=True)
+   
     
     category_id = db.Column(db.Integer, db.ForeignKey('product_categories.id'), nullable=False)
     sub_category_id = db.Column(db.Integer, db.ForeignKey('product_sub_categories.id'), nullable=False)
@@ -65,6 +66,9 @@ class Product(BaseModel):
     stock = db.relationship('Stock', back_populates='product')
 
     material_details = db.relationship('ProductMaterialDetail', back_populates='product', cascade="all, delete-orphan")
+
+    sale_order = db.relationship('SaleOrderProduct', back_populates='products')
+    price_history = db.relationship('ProductPriceHistory', back_populates='product')
 
     def __repr__(self):
         return f'<Product(code={self.code}, name={self.name})>'

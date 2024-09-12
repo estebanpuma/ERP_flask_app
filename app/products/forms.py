@@ -9,11 +9,11 @@ from app.models import Product, ProductCategory, ProductSubCategory
 
 class ProductForm(FlaskForm):
 
-    code = StringField('Codigo', validators=[DataRequired()])
+    code = StringField('Código', validators=[DataRequired()])
     name = StringField('Nombre', validators=[DataRequired(message="Este campo es obligatorio.")])
     description = StringField('Direccion', validators=[Optional()])
-    category = SelectField('Categoria', choices=[('', 'Seleccione una linea')], validators=[Optional()])
-    sub_category = SelectField('Categoria', choices=[('', 'Seleccione una sublinea')], validators=[Optional()])
+    category = SelectField('Línea', choices=[('', 'Seleccione una linea')], validators=[Optional()])
+    sub_category = SelectField('Sublinea', choices=[('', 'Seleccione una sublinea')], validators=[Optional()])
     submit = SubmitField('Guardar')
 
     def __init__(self, *args, **kwargs):
@@ -33,7 +33,7 @@ class ProductSubCategoryForm(FlaskForm):
 
     name = StringField('Nombre', validators=[DataRequired(message="Este campo es obligatorio.")])
     description = StringField('Direccion', validators=[Optional()])
-    category = SelectField('Categoria', choices=[('', 'Seleccione una linea')], validators=[DataRequired()])
+    category = SelectField('Línea', choices=[('', 'Seleccione una linea')], validators=[DataRequired()])
     submit = SubmitField('Guardar')
 
     def __init__(self, *args, **kwargs):

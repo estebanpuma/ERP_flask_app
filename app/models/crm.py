@@ -38,6 +38,7 @@ class Client(BaseModel):
 
     client_category = db.relationship('ClientCategory', backref='clients')
     contacts = db.relationship('Contact', back_populates='client', lazy=True, cascade="all, delete-orphan")
+    orders = db.relationship('SaleOrder', back_populates='client', cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Cliente(nombre={self.name}, ruc_o_cedula={self.ruc_or_ci})>'
